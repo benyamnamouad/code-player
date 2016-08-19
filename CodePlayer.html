@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <title>CodePlayer</title>
+    <script src="jquery.min.js"> </script>
+    <link href="jquery-ui/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" href="highlight/styles/default.css">
+    <script src="highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="jquery-ui/jquery-ui.js"></script>
+
+    <style>
+
+        body{
+            font-family:system, "Helvetica Neue", Helvetica, sans-serif ;
+            padding: 0;
+            margin: 0;
+
+        }
+        #top-bar{
+            padding: 2px 0 1px 0 ;
+            height: 31px;
+            background-color: #EEEEEE;
+            border-bottom:1px solid #CCCCCC; ;
+        }
+        #logo {
+            font-weight: bold;
+            font-size: 18px;
+            float: left;
+            margin-top: 5px;
+        }
+
+        #button-container {
+
+            font-weight: normal;
+            padding: 0;
+            font-size: 13px;
+            margin: 0 auto;
+            width: 260px;
+
+        }
+        .toggel-button {
+
+            height: 21px;
+            padding: 7px 8px 0 8px;
+            float: left;
+            border:  1px solid #CCCCCC;
+            border-right: none;
+        }
+
+        #output{
+            border-right: 1px solid #CCCCCC;;
+            border-bottom-right-radius:5px ;
+            border-top-right-radius: 5px ;
+        }
+
+        #html{
+            border-bottom-left-radius:5px ;
+            border-top-left-radius: 5px ;
+        }
+        .active{
+            background-color: #EBF3FF;;
+        }
+        .active.highlightedButtonActive {
+            background-color:#F5F9FF;
+        }
+
+
+        .hightlightedButton {
+            background-color: #E5E5E5;
+        }
+        textarea {
+            resize: none;
+
+        }
+
+        .panel{
+            border: 1px solid #CCCCCC;
+            border-top: none;
+            border-left: none;
+            width: 50%;
+            float: left;
+        }
+
+        .hidden{
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<div id="top-bar">
+    <div id="logo"> CodePlayer</div>
+
+    <div id="button-container">
+        <div id="html" class="toggel-button active">HTML  </div>
+        <div id="css" class="toggel-button">CSS</div>
+        <div id="javascript" class="toggel-button">JavaScript</div>
+        <div id="output" class="toggel-button active"> Output</div>
+    </div>
+</div>
+
+<div id="body-container">
+    <textarea id="html-panel" class="panel"> hello world ! </textarea>
+    <textarea id="css-panel" class="panel hidden"> p {color : green} </textarea>
+    <textarea id="javascript-panel" class="panel hidden"> alert("hello world javascript"); </textarea>
+    <iframe id="output-panel" class="panel"> </iframe>
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+    var toggelButton = ".toggel-button";
+    var panel = ".panel";
+    var highlightToggelButtonClass;
+
+    function updateOutput() {
+        $("#output-panel").contents().find("html").html("<html><head><style type='text/css'>"
+            +$("#css-panel").val()+"</style></head><body>"+ $("#html-panel").val()+"</body></html>");
+        document.getElementById("output-panel").contentWindow.eval($("#javascript-panel").val());
+    }
+
+    $(toggelButton).hover(function () {
+        $( this ).addClass(function( ) {
+
+            if ($(this).hasClass("active") ) {
+                highlightToggelButtonClass = "highlightedButtonActive";
+            } else {
+                highlightToggelButtonClass= "hightlightedButton";
+            }
+            return highlightToggelButtonClass;
+        });
+    },function () {
+        $(this).removeClass(highlightToggelButtonClass);
+
+    });
+
+    $(toggelButton).click(function () {
+        $(this).toggleClass("active");
+        var panelId = $(this).attr("id") +"-panel";
+        $("#"+panelId).toggleClass("hidden");
+        var nbrOfActivePanel = 4- $('.hidden').length;
+        $(panel).width(($(window).width()/ nbrOfActivePanel)-13);
+    });
+
+    updateOutput();
+    $("#output-panel").contents().find("html").html($("#html-panel").val());
+    $(panel).width(($(window).width()/ 2)-13);
+    $(panel).height($(window).height()-$("#top-bar").height()-9);
+    $("textarea").on('change keyup paste', function() {
+        updateOutput()
+    });
+
+</script>
+</body>
+</html>
+
